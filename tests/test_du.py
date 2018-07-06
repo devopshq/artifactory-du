@@ -8,7 +8,7 @@ def test_out_as_du_simple_human():
          'size': 1024,
          },
     ]
-    expected_result = """1K    level1"""
+    expected_result = """1K      level1"""
     result = out_as_du(artifacts, max_depth=1, human_readable=True, all=False)
     assert expected_result == result
 
@@ -46,23 +46,29 @@ ARTIFACTS = [
 
 
 def test_out_as_du_max_depth_1():
-    expected_result = """2K    1
-2K    2"""
+    expected_result = """2K      1
+2K      2"""
     result = out_as_du(ARTIFACTS, max_depth=1, human_readable=True, all=False)
     assert expected_result == result
 
 
 def test_out_as_du_max_depth_2():
-    expected_result = """2K    1/2
-2K    2/2"""
+    expected_result = """2K      1/2
+2K      2/2"""
     result = out_as_du(ARTIFACTS, max_depth=2, human_readable=True, all=False)
     assert expected_result == result
 
 
 def test_out_as_du_max_depth_all():
-    expected_result = """1K    1/2/filename11.txt
-1K    1/2/filename12.txt
-1K    2/2/filename21.txt
-1K    2/2/filename22.txt"""
+    expected_result = """1K      1/2/filename11.txt
+1K      1/2/filename12.txt
+1K      2/2/filename21.txt
+1K      2/2/filename22.txt"""
     result = out_as_du(ARTIFACTS, max_depth=100, human_readable=True, all=True)
+    assert expected_result == result
+
+
+def test_out_as_du_max_depth_0():
+    expected_result = """4K      /"""
+    result = out_as_du(ARTIFACTS, max_depth=0, human_readable=True, all=True)
     assert expected_result == result

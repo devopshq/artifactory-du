@@ -16,14 +16,19 @@ def init_logging():
     logging.basicConfig(level=logging.DEBUG, format=logger_format_string, stream=sys.stdout)
 
 
-def main(artifactory_url, username, password, repository, max_depth, file, human_readable, all, summarize):
+def main(artifactory_url, username, password, repository, max_depth, file, human_readable, all):
     aql = ArtifactoryPath(artifactory_url, auth=(username, password), verify=False)
     aql_query_dict = {"repo": repository}
     if file:
+        # Remove first / in path: /path => path
         file = file[1:] if file.startswith('/') else file
-        aql_query_dict.update(
-            {'path': {"$match": file + '/*'}}
-        )
+        if '*' in file:
+            max_depth += file.count('*')
+            max_depth += file.count('/')
+            aql_query_dict['path'] = {"$match": file}
+            # replace null string to *
+        else:
+            aql_query_dict['path'] = {"$match": file + "/*"}
 
     logging.debug("AQL query: items.find({})".format(aql_query_dict))
     artifacts = aql.aql('items.find', aql_query_dict)
@@ -31,7 +36,7 @@ def main(artifactory_url, username, password, repository, max_depth, file, human
     artifacts_size = sum([x['size'] for x in artifacts])
     logging.debug('Summary size: {}'.format(size(artifacts_size)))
 
-    print_str = out_as_du(artifacts, max_depth, human_readable, all, summarize)
+    print_str = out_as_du(artifacts, max_depth, human_readable, all)
     print(print_str)
 
 
@@ -78,6 +83,11 @@ if __name__ == "__main__":
         print('artifactory-du: cannot both summarize and show all entries', file=sys.stderr)
 
     args = args.__dict__
+    if args.pop('summarize'):
+        if args['max_depth'] != 100:
+            print('artifactory-du: warning: summarizing is the same as using --max-depth=0', file=sys.stderr)
+        args['max_depth'] = 0
+
     if args.pop('verbose'):
         init_logging()
 
