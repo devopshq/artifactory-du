@@ -6,6 +6,7 @@ Artifactory Disk Usage cli (artifactory-du)
 `artifactory-du` - estimate file space usage
 
 Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for directories.
+
 # Table of Contents
 TODO
 
@@ -32,18 +33,28 @@ artifactory-du -h --max-depth=2 folder/*
 
 # show 2 folder level inside repository
 artifactory-du -h --max-depth=2 *
+
+# Show only directory with GB size
+artifactory-du -h --max-depth=0 * | grep G
+
 ```
 
-## Artifactory specific options
-- `--artifactory-url` -URL to artifactory, e.g: https://arti.example.com/artifactory"
-- `--username` - user how have READ access to repository
-- `--password`, - user's password how have READ access to repository
-- `--repository` - Specify repository
+## Artifactory options
+### Connection
+- `--artifactory-url http://arti.example.com/artifactory` -URL to artifactory, e.g: https://arti.example.com/artifactory"
+- `--username USERNAME` - user how have READ access to repository
+- `--password PASSWORD`, - user's password how have READ access to repository
+- `--repository REPOSITORY` - Specify repository
 - `--verbose` - increase output verbosity
 
+### Specific
+- `--without-download`
+- `--older-than DAY_COUNT`
+- `--created-after TIME`
+
 ## du common options support
+- `--max-depth N` - print the total for a directory (or file, with --all) only if it is N or fewer levels below the command line argument; `--max-depth=0` is the same  as `--summarize`
 - `--human-readable, -h` - print sizes in human readable format (e.g., 1K 234M 2G)
-- `--max-depth` - print the total for a directory (or file, with --all) only if it is N or fewer levels below the command line argument; `--max-depth=0` is the same  as `--summarize`
 - `--all` - write counts for all files, not just directories
 - `--summarize` - display only a total for each argument
 

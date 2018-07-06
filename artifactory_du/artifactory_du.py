@@ -16,7 +16,7 @@ def init_logging():
     logging.basicConfig(level=logging.DEBUG, format=logger_format_string, stream=sys.stdout)
 
 
-def main(artifactory_url, username, password, repository, max_depth, file, human_readable, all):
+def du(artifactory_url, username, password, repository, max_depth, file, human_readable, all):
     aql = ArtifactoryPath(artifactory_url, auth=(username, password), verify=False)
     aql_query_dict = {"repo": repository}
     if file:
@@ -77,7 +77,7 @@ def parse_args():
     return args_
 
 
-if __name__ == "__main__":
+def main():
     args = parse_args()
     if args.all and args.summarize:
         print('artifactory-du: cannot both summarize and show all entries', file=sys.stderr)
@@ -91,4 +91,8 @@ if __name__ == "__main__":
     if args.pop('verbose'):
         init_logging()
 
-    main(**args)
+    du(**args)
+
+
+if __name__ == "__main__":
+    main()
