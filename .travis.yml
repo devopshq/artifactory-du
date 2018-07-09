@@ -5,9 +5,9 @@ language: python
 matrix:
     include:
         - python: 3.4
-          if: branch =~ (^release.*)|(^master)
+#          if: branch =~ (^release.*)|(^master)
         - python: 3.5
-          if: branch =~ (^release.*)|(^master)
+#          if: branch =~ (^release.*)|(^master)
         - python: 3.6
 branches:
   only:
@@ -18,7 +18,7 @@ install:
 script:
   - printenv
   - ls -la
-  - py.test tests
+  - python -m pytest tests
 
 deploy:
 - provider: pypi
