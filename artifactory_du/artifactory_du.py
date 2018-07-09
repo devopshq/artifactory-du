@@ -14,11 +14,26 @@ requests.packages.urllib3.disable_warnings()
 
 
 def init_logging():
+    """
+    Init logging
+    :return:
+    """
     logger_format_string = '%(levelname)-8s %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=logger_format_string, stream=sys.stdout)
 
 
-def du(artifactory_url, username, password, aql_query_dict, max_depth_print, human_readable, all):
+def artifactory_aql(artifactory_url, username, password, aql_query_dict):
+    """
+    Send AQL to Artifactory and get list of Artifacts
+    :param artifactory_url:
+    :param username:
+    :param password:
+    :param aql_query_dict:
+    :param max_depth_print:
+    :param human_readable:
+    :param all:
+    :return:
+    """
     aql = ArtifactoryPath(artifactory_url, auth=(username, password), verify=False)
 
     logging.debug("AQL query: items.find({})".format(aql_query_dict))
@@ -27,8 +42,7 @@ def du(artifactory_url, username, password, aql_query_dict, max_depth_print, hum
     artifacts_size = sum([x['size'] for x in artifacts])
     logging.debug('Summary size: {}'.format(size(artifacts_size)))
 
-    print_str = out_as_du(artifacts, max_depth_print, human_readable, all)
-    print(print_str)
+    return artifacts
 
 
 def prepare_aql(file, max_depth, repository, without_downloads, older_than):
@@ -126,9 +140,10 @@ def main():
 
     aql_query_dict, max_depth_print = prepare_aql(file=args.file, max_depth=args.max_depth, repository=args.repository,
                                                   without_downloads=args.without_downloads, older_than=args.older_than)
-    du(artifactory_url=args.artifactory_url, username=args.username, password=args.password,
-       max_depth_print=max_depth_print,
-       aql_query_dict=aql_query_dict, human_readable=args.human_readable, all=args.all)
+    artifacts = artifactory_aql(artifactory_url=args.artifactory_url, aql_query_dict=aql_query_dict,
+                                username=args.username, password=args.password, )
+    print_str = out_as_du(artifacts, max_depth_print, args.human_readable, args.all)
+    print(print_str)
 
 
 if __name__ == "__main__":
