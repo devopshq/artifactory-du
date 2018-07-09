@@ -8,7 +8,15 @@ Artifactory Disk Usage cli (artifactory-du)
 Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for directories.
 
 # Table of Contents
-TODO
+- [Install](#install)
+- [Usage](#usage)
+    - [Artifactory options](#artifactory-options)
+        - [Connection](#connection)
+        - [Specific](#specific)
+    - [DU options](#du-options)
+- [Known issues](#known-issues)
+- [CONTRIBUTING](#contributing)
+
 
 # Install
 ```cmd
@@ -69,16 +77,19 @@ adu --max-depth=0 * --older-than 30 | grep G
 - `--without-downloads` - Find items that have never been downloaded (`stat.downloads == 0`)
 - `--older-than DAY_COUNT` - counts for files older than `DAY_COUNT`
 
-## du common options support
+## DU options
 - `--max-depth N` - print the total for a directory (or file, with --all) only if it is N or fewer levels below the command line argument; `--max-depth=0` is the same  as `--summarize`
 - `--human-readable, -h` - print sizes in human readable format (e.g., 1K 234M 2G)
 - `--all` - write counts for all files, not just directories
 - `--summarize` - display only a total for each argument
 
-# Known issue
+# Known issues
 1. Does not support filename in `<file>`: `artifactory-du -h -s */*.deb` will fail
 2. Does not print folder if `summarize` folder: `artifactory-du -h -s foldername` will out: `123G    /` , expected as original `du`: `123G    foldername`
 
+# CONTRIBUTING
+- Create your own github-fork
+- Change files
 
 ---------------
 Inspired by https://github.com/reversefold/artifactory-disk-usage
