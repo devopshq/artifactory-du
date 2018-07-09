@@ -16,6 +16,7 @@ Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for d
     - [DU options](#du-options)
 - [Known issues](#known-issues)
 - [CONTRIBUTING](#contributing)
+- [AD](#ad)
 
 
 # Install
@@ -97,6 +98,57 @@ Create release:
 - Dump version on `develop`-branch in `artifactory_du.version.py`
 - Pull request to `master`
 - Profit :)
+
+# AD
+We also have python-script for Artifactory intelligence cleanup rules with config format like this:
+```python
+GOOD_FILTER_PATH_SYMBOLS = [
+    r'*release*', r'*/r-*',
+    r'*master*',
+    r'*stable*',
+]
+
+RULES = [
+    {'name': 'Clean all *.tmp',
+     'rules': [
+         rules.repo_by_mask('*.tmp'),
+         rules.delete_older_than_n_days(7),
+     ]},
+
+    {'name': 'Clean all *.BANNED after 7 days',
+     'rules': [
+         rules.repo_by_mask('*.BANNED'),
+         rules.delete_older_than_n_days(7),
+     ]},
+
+    {'name': 'Clean all *.snapshot after 30 days',
+     'rules': [
+         rules.repo_by_mask('*.snapshot'),
+         rules.delete_older_than_n_days(30),
+     ]},
+
+     {'name': 'tech-symbols',
+     'rules': [
+         rules.repo, # repo-name like 'name'
+         rules.delete_older_than_n_days(30),
+         rules.filter_without_path_mask(GOOD_FILTER_PATH_SYMBOLS),
+         rules.filter_without_filename_mask(GOOD_FILTER_PATH_SYMBOLS),
+         rules.filter_by_filename_mask('*-*symbols.tar.gz'),
+         rules.without_downloads()
+     ]},
+
+     {'name': 'docker-scmdev',
+     'rules': [
+         rules.repo, # repo-name like 'name'
+         rules.filter_by_path_mask('scmdev.test*'),
+         rules.delete_images_older_than_n_days(1),
+     ]},
+]
+
+```
+
+If you want it, please vote for issue and we will schedule time for move project to open-source: https://github.com/devopshq/artifactory-du/issues/2
+
 
 ---------------
 Inspired by https://github.com/reversefold/artifactory-disk-usage
