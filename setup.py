@@ -26,7 +26,6 @@ def get_requires(filename):
 
 
 project_requirements = get_requires("artifactory_du/requirements.txt")
-dev_requirements = get_requires("artifactory_du/requirements_dev.txt")
 
 
 def load_version():
@@ -35,10 +34,10 @@ def load_version():
     :return:
     """
     filename = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                            "artifactory_du", "__init__.py"))
+                                            "artifactory_du", "version.py"))
     with open(filename, "rt") as version_file:
-        conan_init = version_file.read()
-        version = re.search("__version__ = '([0-9a-z.-]+)'", conan_init).group(1)
+        artifactory_du_init = version_file.read()
+        version = re.search("__version__ = '([0-9a-z.-]+)'", artifactory_du_init).group(1)
         return version
 
 
@@ -49,13 +48,13 @@ def load_version():
 #     return output
 
 setup(
-    name='conan',
+    name='artifactory-du',
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
     version=load_version(),  # + ".rc1",
 
-    description='Artofact',
+    description='Artifactory du cli',
     # long_description="An open source, decentralized package manager, to automate building and sharing of packages",
     # long_description=generate_long_description_file(),
 
@@ -102,9 +101,13 @@ setup(
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
-    extras_require={
-        'dev': dev_requirements,
-    },
+    # extras_require={
+    #     'dev': dev_requirements,
+    # },
+    setup_requires=[
+        'pytest-runner',
+        'pytest',
+    ],
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
@@ -124,7 +127,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'artifactory_du=artifactory_du.cli:main',
+            'artifactory_du=artifactory_du.artifactory_du:main',
         ],
     },
 )

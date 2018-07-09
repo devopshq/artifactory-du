@@ -1,13 +1,14 @@
 import argparse
 import logging
 import sys
+from datetime import date, timedelta
 
 import requests
 from artifactory import ArtifactoryPath
-from datetime import date, timedelta
 from hurry.filesize import size
 
-from du import out_as_du
+from artifactory_du.du import out_as_du
+from artifactory_du.version import __version__
 
 requests.packages.urllib3.disable_warnings()
 
@@ -74,6 +75,8 @@ def parse_args():
     # replace argparse.help, because du use -h flag for --human-readable
     parser.add_argument('--help', action='help', default=argparse.SUPPRESS,
                         help='show this help message and exit.')
+    parser.add_argument('--version', action='version', version='%(prog)s {}'.format(__version__))
+
     # Artifactory CONNECTION arguments
     parser.add_argument("--artifactory-url", action="store", required=True,
                         help="URL to artifactory, e.g: https://arti.example.com/artifactory", )

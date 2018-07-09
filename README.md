@@ -88,8 +88,15 @@ adu --max-depth=0 * --older-than 30 | grep G
 2. Does not print folder if `summarize` folder: `artifactory-du -h -s foldername` will out: `123G    /` , expected as original `du`: `123G    foldername`
 
 # CONTRIBUTING
+Contributing:
 - Create your own github-fork
 - Change files
+- Create pull request to `develop`-branch
+
+Create release:
+- Dump version on `develop`-branch in `artifactory_du.version.py`
+- Pull request to `master`
+- Profit :)
 
 ---------------
 Inspired by https://github.com/reversefold/artifactory-disk-usage
