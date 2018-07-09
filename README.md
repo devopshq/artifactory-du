@@ -24,18 +24,36 @@ You can use `artifactory-du` like original *nix `du`, but you need use some spec
 ```cmd
 # Recursive summary for all folder in repo.snapshot
 artifactory-du --username username --password password --artifactory-url https://repo.example.ru/artifactory --repository repo.snapshot -h -s *
+
+# Set alias for linux
+alias adu=artifactory-du --username username --password password --artifactory-url https://repo.example.ru/artifactory --repository repo.snapshot -h
+# usage
+adu --max-depth=2 /*
+
+# Set alias for Windows
+set "adu=artifactory-du --username username --password password --artifactory-url https://repo.example.ru/artifactory --repository repo.snapshot -h"
+# usage
+%adu% --max-depth=2 /*
+
 ```
-Below we miss artifactory-specific options: `username, password, artifactory-url, repository`
+
+Below we miss artifactory-specific options: `username, password, artifactory-url, repository`, because we use ALIAS (for [linux-bash](https://askubuntu.com/questions/17536/how-do-i-create-a-permanent-bash-alias) or [windows-cmd](https://superuser.com/a/560558)
 
 ```cmd
 # Summary for subfolder in foldername
-artifactory-du -h --max-depth=2 folder/*
+adu --max-depth=2 folder/*
 
 # show 2 folder level inside repository
-artifactory-du -h --max-depth=2 *
+adu --max-depth=2 *
 
 # Show only directory with GB size
-artifactory-du -h --max-depth=0 * | grep G
+adu --max-depth=0 * | grep G
+
+# Show artifacts that have never been downloaded
+adu --max-depth=0 * --without-downloads | grep G
+
+# Show artifacts that older than 30 days
+adu --max-depth=0 * --older-than 30 | grep G
 
 ```
 
@@ -48,9 +66,8 @@ artifactory-du -h --max-depth=0 * | grep G
 - `--verbose` - increase output verbosity
 
 ### Specific
-- `--without-download`
-- `--older-than DAY_COUNT`
-- `--created-after TIME`
+- `--without-downloads` - Find items that have never been downloaded (`stat.downloads == 0`)
+- `--older-than DAY_COUNT` - counts for files older than `DAY_COUNT`
 
 ## du common options support
 - `--max-depth N` - print the total for a directory (or file, with --all) only if it is N or fewer levels below the command line argument; `--max-depth=0` is the same  as `--summarize`

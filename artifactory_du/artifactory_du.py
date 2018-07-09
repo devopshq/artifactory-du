@@ -4,6 +4,7 @@ import sys
 
 import requests
 from artifactory import ArtifactoryPath
+from datetime import date, timedelta
 from hurry.filesize import size
 
 from du import out_as_du
@@ -16,8 +17,28 @@ def init_logging():
     logging.basicConfig(level=logging.DEBUG, format=logger_format_string, stream=sys.stdout)
 
 
-def du(artifactory_url, username, password, repository, max_depth, file, human_readable, all):
+def du(artifactory_url, username, password, aql_query_dict, max_depth_print, human_readable, all):
     aql = ArtifactoryPath(artifactory_url, auth=(username, password), verify=False)
+
+    logging.debug("AQL query: items.find({})".format(aql_query_dict))
+    artifacts = aql.aql('items.find', aql_query_dict)
+    logging.debug('Artifacts count: {}'.format(len(artifacts)))
+    artifacts_size = sum([x['size'] for x in artifacts])
+    logging.debug('Summary size: {}'.format(size(artifacts_size)))
+
+    print_str = out_as_du(artifacts, max_depth_print, human_readable, all)
+    print(print_str)
+
+
+def prepare_aql(file, max_depth, repository, without_downloads, older_than):
+    """
+    Prepare AQL and calculate new max_depth for du
+    :param older_than:
+    :param file: pattern for file
+    :param max_depth:
+    :param repository:
+    :return: tuple - aql.dict and new max_depth
+    """
     aql_query_dict = {"repo": repository}
     if file:
         # Remove first / in path: /path => path
@@ -30,14 +51,18 @@ def du(artifactory_url, username, password, repository, max_depth, file, human_r
         else:
             aql_query_dict['path'] = {"$match": file + "/*"}
 
-    logging.debug("AQL query: items.find({})".format(aql_query_dict))
-    artifacts = aql.aql('items.find', aql_query_dict)
-    logging.debug('Artifacts count: {}'.format(len(artifacts)))
-    artifacts_size = sum([x['size'] for x in artifacts])
-    logging.debug('Summary size: {}'.format(size(artifacts_size)))
+    if without_downloads:
+        aql_query_dict["stat.downloads"] = {"$eq": None}
+        logging.debug("Counts for artifacts without downloads")
 
-    print_str = out_as_du(artifacts, max_depth, human_readable, all)
-    print(print_str)
+    if older_than:
+        today = date.today()
+        older_than_date = today - timedelta(older_than)
+        older_than_date_txt = older_than_date.isoformat()
+        aql_query_dict["created"] = {"$lt": older_than_date_txt}
+        logging.debug('Counts for artifacts older than {}'.format(older_than_date_txt))
+
+    return aql_query_dict, max_depth
 
 
 APP_DESCRIPTION = "Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for directories."
@@ -49,7 +74,7 @@ def parse_args():
     # replace argparse.help, because du use -h flag for --human-readable
     parser.add_argument('--help', action='help', default=argparse.SUPPRESS,
                         help='show this help message and exit.')
-    # Artifactory specific arguments
+    # Artifactory CONNECTION arguments
     parser.add_argument("--artifactory-url", action="store", required=True,
                         help="URL to artifactory, e.g: https://arti.example.com/artifactory", )
     parser.add_argument("--username", action="store", required=True,
@@ -59,6 +84,12 @@ def parse_args():
     parser.add_argument("--repository", action="store", required=True,
                         help="Specify repository", )
     parser.add_argument("--verbose", "-v", "--debug", help="increase output verbosity", action="store_true")
+
+    # Artifactory SPECIFIC arguments
+    parser.add_argument("--without-downloads", action="store_true",
+                        help="Find items that have never been downloaded")
+    parser.add_argument("--older-than", action="store", default=0, type=int,
+                        help="counts for files older than `DAY_COUNT`")
 
     # du arguments
     parser.add_argument("--human-readable", "-h", action="store_true", required=False,
@@ -82,16 +113,19 @@ def main():
     if args.all and args.summarize:
         print('artifactory-du: cannot both summarize and show all entries', file=sys.stderr)
 
-    args = args.__dict__
-    if args.pop('summarize'):
-        if args['max_depth'] != 100:
+    if args.summarize:
+        if args.max_depth != 100:
             print('artifactory-du: warning: summarizing is the same as using --max-depth=0', file=sys.stderr)
-        args['max_depth'] = 0
+        args.max_depth = 0
 
-    if args.pop('verbose'):
+    if args.verbose:
         init_logging()
 
-    du(**args)
+    aql_query_dict, max_depth_print = prepare_aql(file=args.file, max_depth=args.max_depth, repository=args.repository,
+                                                  without_downloads=args.without_downloads, older_than=args.older_than)
+    du(artifactory_url=args.artifactory_url, username=args.username, password=args.password,
+       max_depth_print=max_depth_print,
+       aql_query_dict=aql_query_dict, human_readable=args.human_readable, all=args.all)
 
 
 if __name__ == "__main__":
