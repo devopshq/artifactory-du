@@ -106,13 +106,13 @@ def parse_args():
     parser.add_argument("--without-downloads", action="store_true",
                         help="Find items that have never been downloaded")
     parser.add_argument("--older-than", action="store", default=0, type=int,
-                        help="counts for files older than `DAY_COUNT`")
+                        help="only counts size for files older than")
 
     # du arguments
     parser.add_argument("--human-readable", "-h", action="store_true", required=False,
                         help="print sizes in human readable format (e.g., 1K 234M 2G)")
     parser.add_argument("--max-depth", action="store", required=False, default=100, type=int,
-                        help="print the total for a directory (or file, with --all) only if it is N or fewer levels"
+                        help="print the total size for a directory (or file, with --all) only if it is N or fewer levels"
                              "below the command line argument;  --max-depth=0 is the same  as --summarize")
     parser.add_argument("--all", action="store_true",
                         help="write counts for all files, not just directories")
