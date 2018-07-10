@@ -5,9 +5,9 @@ language: python
 matrix:
     include:
         - python: 3.4
-#          if: branch =~ (^release.*)|(^master)
+          if: branch != master
         - python: 3.5
-#          if: branch =~ (^release.*)|(^master)
+          if: branch != master
         - python: 3.6
 branches:
   only:
@@ -24,7 +24,7 @@ deploy:
 - provider: pypi
   user: devopshq
   password:
-    secure: "u7kqhFT32wLvGvdXLRg3RtTdfGcSzfFWTQb0p1cdRHWBm/771Q2H4bfvwv8GTVmSz+0txtW4O20/VMuMSULqAgW9ChLoNnpppsiEuwOL/KgFknOMgegM+QqdBU7OyB4c0XBxCEfoe8/+Z8lNlB1+UShwh6aJHjiUvR9U537ebtniMWyj0Nb93f53YQGsh29gbuqDNzIWPePFuSDBhKTRhKEHdBfol11YCgyNs2MXkdTUQ60G+DMtdAOM32mJEXi3n2yQWtnWdnsxApqZ4LLlEO1J7FJ0/6sXEd5Y8aQBoYPdE5RdGjo1gjxpp0tL3WxXisG1TlHdgNShKzO5CT4pUFD5qWqhbzlwDM8eI3xFS39I75bVeoPrQ9jn0MlBs8JQJIEFbn6HDW7G/hezMoQPwH2Sn2ET9/XH9axt3U7Wrqf9I10FuFMdBZ4hD62kml94WfxiC40sCNMgYW/zPYGSUQLXfzWImyFz32K8MTQErWVoiaDz8bx5rjLa+zmmwchhZCX4YdBh4BMIOy793YYx6/jLGUBhKuIyHGYREUF/ZlZg5rYssbKUP9G4TdzPix3dGCBgdtrsYwUZ79Odu/SjwV8uzOfcU2p9E0j1GjEK5BnfwY7b5ZpXeagBze34kDU3U89Jnmwc08eu0S+olv7/4iGn+gvQZOvM9s0CShhMI7I="
+    secure: "OEUMpcA+R4jj59lhw99hSz9RI0FbQF2Oz1tr77Shxf8FNUflsLqjQIIdtUfUEwsxt3paEYJQmc6TMciRZTpaup+iADdeCBYAEl3E42xKs5i+q4765BTO8G6fQQP1mIDakty2pBX97YzinjARrcDw+hB5XkcRY2qWKjbpnutBWtYT9WYmBsLABq4pM35rwhrj0Bh7mKu56XrxjemIb5zDZFmC1kZW/5yhYx3L+YoN88dkypcAsmcVaEZC9es5D20wqeVTQYGfkKbgw4mVxQENlJ7DeM8fS/3gTWBTemn1HDEA02K+C6vVEUiFuXHIV60B47O/mZmt64o7bdXhPtlAS0VUjqDkid4k/3GPjMXqoNbMR2rSt5PhuwIGxskNFTv+nvvEKiJE/3eqS6g9Dx5r5Ix8elCgPnUTvxvRzXv2tCto5/8qA+tWo3aPyYciCSAXN1I9h333zIaxZVNac+37KUS/Go+sYSqbnj53kTojvtKvVnLV/FrE4vy5rh7tC4ctgxRcjYIDSiSsCEHMHV4Vd4QQPXpJWGFMnwss3zTYZbTtlAsAtFnBhhnDL7EjkTkrcTDBD/kJrX2yTTuOGguXeeHRLTLTk09s75yVHkPbmp73ul+JNw7WFeldVBu8NmSxZuuJAD3AFERlsf2t9tDU1wwnHjyguWz2i7EZ7ajC7K4="
   distributions: sdist bdist_wheel
   on:
     branch: master
