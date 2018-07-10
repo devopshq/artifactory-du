@@ -1,0 +1,3 @@
+requests
+dohq-artifactory
+hurry.filesize
