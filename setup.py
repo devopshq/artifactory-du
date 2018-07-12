@@ -47,6 +47,13 @@ def load_version():
 #     output = pypandoc.convert('README.md', 'rst')
 #     return output
 
+LONG_DESCRIPTION = """artifactory-du is used in the same manner as original du from *nix, although launch options are different. 
+
+See artifactory-du –help for details.
+
+`https://devopshq.github.io/artifactory-du/ <https://devopshq.github.io/artifactory-du/>`_
+"""
+
 setup(
     name='artifactory-du',
     # Versions should comply with PEP440.  For a discussion on single-sourcing
@@ -54,12 +61,12 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version=load_version(),  # + ".rc1",
 
-    description='Artifactory du cli',
-    # long_description="An open source, decentralized package manager, to automate building and sharing of packages",
+    description='Artifactory Disk Usage command line interface (artifactory-du)',
+    long_description=LONG_DESCRIPTION,
     # long_description=generate_long_description_file(),
 
     # The project's main homepage.
-    url='https://devopshq.github.io/artifactory_du',
+    url='https://devopshq.github.io/artifactory-du',
 
     # Author details
     author='DevOpsHQ',
