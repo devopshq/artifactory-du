@@ -21,8 +21,11 @@ Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for d
 
 # Install
 ```cmd
+# From git
+python -mpip install git+https://github.com/devopshq/artifactory-du.git
+
 # Install from PyPi
-python -mpip install artifactory-du
+# python -mpip install artifactory-du
 
 # and try get help
 artifactory-du --help

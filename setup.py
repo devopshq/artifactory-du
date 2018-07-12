@@ -128,6 +128,7 @@ setup(
     entry_points={
         'console_scripts': [
             'artifactory_du=artifactory_du.artifactory_du:main',
+            'artifactory-du=artifactory_du.artifactory_du:main',
         ],
     },
 )
