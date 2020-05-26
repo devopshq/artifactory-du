@@ -32,5 +32,5 @@ def out_as_du(artifacts, max_depth, human_readable=False, all=False):
         if human_readable:
             artifacts_size = size(artifacts_size)
         artifacts_size = str(artifacts_size)
-        result.append("{}{}".format(artifacts_size.ljust(8), '/'.join(group if group else '/')))
+        result.append("{} {}".format(artifacts_size.ljust(8), '/'.join(group if group else '/')))
     return "\n".join(result)
