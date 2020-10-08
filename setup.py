@@ -47,7 +47,7 @@ def load_version():
 #     output = pypandoc.convert('README.md', 'rst')
 #     return output
 
-LONG_DESCRIPTION = """artifactory-du is used in the same manner as original du from *nix, although launch options are different. 
+LONG_DESCRIPTION = """artifactory-du is used in the same manner as original du from \*nix, although launch options are different. 
 
 See artifactory-du –help for details.
 
