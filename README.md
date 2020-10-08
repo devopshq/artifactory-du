@@ -8,7 +8,7 @@ Artifactory Disk Usage cli (artifactory-du)
 Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for directories.
 
 # Table of Contents
-- [Install](#install)
+- [Installation](#installation)
 - [Usage](#usage)
     - [Artifactory options](#artifactory-options)
         - [Connection](#connection)
@@ -19,15 +19,21 @@ Summarize disk usage in JFrog Artifactory of the set of FILEs, recursively for d
 - [AD](#ad)
 
 
-# Install
-```cmd
-# From git
-python -mpip install git+https://github.com/devopshq/artifactory-du.git
+# Installation
+The easiest way is using docker!
+```bash
+docker pull devopshq/artifactory-du
+docker run devopshq/artifactory-du --version
+```
 
+```cmd
 # Install from PyPi
 # python -mpip install artifactory-du
 
-# and try get help
+# From git
+python -mpip install git+https://github.com/devopshq/artifactory-du.git
+
+# and try to get help
 artifactory-du --help
 ```
 
@@ -92,18 +98,21 @@ adu --max-depth=0 * --older-than 30 | grep G
 2. Does not print folder if `summarize` folder: `artifactory-du -h -s foldername` will out: `123G    /` , expected as original `du`: `123G    foldername`
 
 # CONTRIBUTING
-Contributing:
+How to contribute to the project:
 - Create your own github-fork
 - Change files
-- Create pull request to `develop`-branch
+- Create a pull request to the `develop`-branch
 
-Create release:
-- Dump version on `develop`-branch in `artifactory_du.version.py`
-- Pull request to `master`
-- Profit :)
+How to create a release:
+- Dump the version on `develop`-branch in [artifactory_du/version.py](artifactory_du/version.py)
+- Create a pull request `develop=>master`
+- Merge it and wait till all travis-ci jobs are passed and we have the new version in pypi https://pypi.org/project/artifactory-du/#history
+- Build and push docker image: `make docker-release`
 
 # AD
-We also have python-script for Artifactory intelligence cleanup rules with config format like this:
+Have a look at [artifactory-cleanup](https://github.com/devopshq/artifactory-cleanup). 
+
+It's  Artifactory's intelligence cleanup rules with config format like this:
 ```python
 GOOD_FILTER_PATH_SYMBOLS = [
     r'*release*', r'*/r-*',
@@ -147,10 +156,7 @@ RULES = [
          rules.delete_images_older_than_n_days(1),
      ]},
 ]
-
 ```
-
-If you want it, please vote for issue and we will schedule time for move project to open-source: https://github.com/devopshq/artifactory-du/issues/2
 
 
 ---------------
