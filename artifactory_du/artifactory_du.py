@@ -22,7 +22,7 @@ def init_logging():
     logging.basicConfig(level=logging.DEBUG, format=logger_format_string, stream=sys.stdout)
 
 
-def artifactory_aql(artifactory_url, username, password, aql_query_dict):
+def artifactory_aql(artifactory_url, username, password, kerberos, aql_query_dict, verify):
     """
     Send AQL to Artifactory and get list of Artifacts
     :param artifactory_url:
@@ -34,7 +34,14 @@ def artifactory_aql(artifactory_url, username, password, aql_query_dict):
     :param all:
     :return:
     """
-    aql = ArtifactoryPath(artifactory_url, auth=(username, password), verify=False)
+    if kerberos:
+        from requests_kerberos import HTTPKerberosAuth, DISABLED
+        auth = HTTPKerberosAuth(mutual_authentication=DISABLED, sanitize_mutual_error_response=False)
+    else:
+        if not password:
+            raise ValueError("argument 'password' needs to be set for basic authentication")
+        auth = (username, password)
+    aql = ArtifactoryPath(artifactory_url, auth=auth, verify=verify)
 
     logging.debug("AQL query: items.find({})".format(aql_query_dict))
     artifacts = aql.aql('items.find', aql_query_dict)
@@ -94,13 +101,19 @@ def parse_args():
     # Artifactory CONNECTION arguments
     parser.add_argument("--artifactory-url", action="store", required=True,
                         help="URL to artifactory, e.g: https://arti.example.com/artifactory", )
-    parser.add_argument("--username", action="store", required=True,
-                        help="user how have READ access to repository", )
-    parser.add_argument("--password", action="store", required=True,
-                        help="users password how have READ access to repository", )
     parser.add_argument("--repository", action="store", required=True,
                         help="Specify repository", )
     parser.add_argument("--verbose", "-v", "--debug", help="increase output verbosity", action="store_true")
+
+    # Authentication arguments
+    auth_args = parser.add_mutually_exclusive_group(required=True)
+    auth_args.add_argument("--username", action="store",
+                        help="user how have READ access to repository (password needed in this case)", )
+    auth_args.add_argument("--kerberos", "-k", action="store_true",
+                        help="use kerberos authentication (no password needed here)", )
+
+    parser.add_argument("--password", action="store",
+                        help="users password how have READ access to repository", )
 
     # Artifactory SPECIFIC arguments
     parser.add_argument("--without-downloads", action="store_true",
@@ -141,7 +154,7 @@ def main():
     aql_query_dict, max_depth_print = prepare_aql(file=args.file, max_depth=args.max_depth, repository=args.repository,
                                                   without_downloads=args.without_downloads, older_than=args.older_than)
     artifacts = artifactory_aql(artifactory_url=args.artifactory_url, aql_query_dict=aql_query_dict,
-                                username=args.username, password=args.password, )
+                                username=args.username, password=args.password, kerberos=args.kerberos, verify=True)
     print_str = out_as_du(artifacts, max_depth_print, args.human_readable, args.all)
     print(print_str)
 
