@@ -28,6 +28,8 @@ def artifactory_aql(artifactory_url, username, password, kerberos, aql_query_dic
     :param artifactory_url:
     :param username:
     :param password:
+    :param kerberos: Boolean if kerberos authentication should be used
+    :param verify: Boolean if SSL certificate should be checked
     :param aql_query_dict:
     :param max_depth_print:
     :param human_readable:
