@@ -103,6 +103,7 @@ def parse_args():
                         help="URL to artifactory, e.g: https://arti.example.com/artifactory", )
     parser.add_argument("--repository", action="store", required=True,
                         help="Specify repository", )
+    parser.add_argument("--ignorecert", help="ignore SSL certificate of the artifactory server", action="store_true")
     parser.add_argument("--verbose", "-v", "--debug", help="increase output verbosity", action="store_true")
 
     # Authentication arguments
@@ -154,7 +155,7 @@ def main():
     aql_query_dict, max_depth_print = prepare_aql(file=args.file, max_depth=args.max_depth, repository=args.repository,
                                                   without_downloads=args.without_downloads, older_than=args.older_than)
     artifacts = artifactory_aql(artifactory_url=args.artifactory_url, aql_query_dict=aql_query_dict,
-                                username=args.username, password=args.password, kerberos=args.kerberos, verify=True)
+                                username=args.username, password=args.password, kerberos=args.kerberos, verify=not args.ignorecert)
     print_str = out_as_du(artifacts, max_depth_print, args.human_readable, args.all)
     print(print_str)
 
