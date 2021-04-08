@@ -6,6 +6,7 @@ from datetime import date, timedelta
 import requests
 from artifactory import ArtifactoryPath
 from hurry.filesize import size
+from requests_kerberos import HTTPKerberosAuth, DISABLED
 
 from artifactory_du.du import out_as_du
 from artifactory_du.version import __version__
@@ -37,7 +38,6 @@ def artifactory_aql(artifactory_url, username, password, kerberos, aql_query_dic
     :return:
     """
     if kerberos:
-        from requests_kerberos import HTTPKerberosAuth, DISABLED
         auth = HTTPKerberosAuth(mutual_authentication=DISABLED, sanitize_mutual_error_response=False)
     else:
         if not password:
