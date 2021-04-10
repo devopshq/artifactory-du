@@ -14,6 +14,7 @@ branches:
   - master
   - develop
 install:
+  - pip install --upgrade pip
   - pip install -r artifactory_du/requirements.txt
 script:
   - printenv
