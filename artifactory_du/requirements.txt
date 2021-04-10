@@ -1,3 +1,6 @@
 requests
+setuptools>=46.1 ; python_version >= '3.6'
+setuptools-rust ; python_version >= '3.6'
+requests_kerberos
 dohq-artifactory
 hurry.filesize
