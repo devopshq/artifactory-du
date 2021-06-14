@@ -3,10 +3,11 @@ from artifactory_du.du import out_as_du
 
 def test_out_as_du_simple_human():
     artifacts = [
-        {'name': 'filename1.txt',
-         'path': 'level1',
-         'size': 1024,
-         },
+        {
+            "name": "filename1.txt",
+            "path": "level1",
+            "size": 1024,
+        },
     ]
     expected_result = """1K      level1"""
     result = out_as_du(artifacts, max_depth=1, human_readable=True, all=False)
@@ -15,10 +16,11 @@ def test_out_as_du_simple_human():
 
 def test_out_as_du_simple_byte():
     artifacts = [
-        {'name': 'filename1.txt',
-         'path': 'level1',
-         'size': 1024,
-         },
+        {
+            "name": "filename1.txt",
+            "path": "level1",
+            "size": 1024,
+        },
     ]
     expected_result = """1024    level1"""
     result = out_as_du(artifacts, max_depth=1, human_readable=False, all=False)
@@ -26,22 +28,26 @@ def test_out_as_du_simple_byte():
 
 
 ARTIFACTS = [
-    {'name': 'filename11.txt',
-     'path': '1/2',
-     'size': 1024,
-     },
-    {'name': 'filename12.txt',
-     'path': '1/2',
-     'size': 1024,
-     },
-    {'name': 'filename21.txt',
-     'path': '2/2',
-     'size': 1024,
-     },
-    {'name': 'filename22.txt',
-     'path': '2/2',
-     'size': 1024,
-     },
+    {
+        "name": "filename11.txt",
+        "path": "1/2",
+        "size": 1024,
+    },
+    {
+        "name": "filename12.txt",
+        "path": "1/2",
+        "size": 1024,
+    },
+    {
+        "name": "filename21.txt",
+        "path": "2/2",
+        "size": 1024,
+    },
+    {
+        "name": "filename22.txt",
+        "path": "2/2",
+        "size": 1024,
+    },
 ]
 
 
