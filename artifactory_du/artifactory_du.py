@@ -23,27 +23,29 @@ def init_logging():
     logging.basicConfig(level=logging.DEBUG, format=logger_format_string, stream=sys.stdout)
 
 
-def artifactory_aql(artifactory_url, username, password, kerberos, aql_query_dict, verify):
+def artifactory_aql(artifactory_url="", username="", password="", aql_query_dict=None, kerberos=False, verify=False,
+                    artifactory_path=None):
     """
     Send AQL to Artifactory and get list of Artifacts
-    :param artifactory_url:
-    :param username:
-    :param password:
+    :param artifactory_path: (ArtifactoryPath) if provided then use this object as URL, username and password
+    :param artifactory_url: URL path to artifactory (not the repo), not applied with artifactory_path
+    :param username: username for authentication, not applied with artifactory_path
+    :param password: password for authentication, not applied with artifactory_path
     :param kerberos: Boolean if kerberos authentication should be used
     :param verify: Boolean if SSL certificate should be checked
-    :param aql_query_dict:
-    :param max_depth_print:
-    :param human_readable:
-    :param all:
+    :param aql_query_dict: (dict) that you get from prepare_aql function
     :return:
     """
-    if kerberos:
-        auth = HTTPKerberosAuth(mutual_authentication=DISABLED, sanitize_mutual_error_response=False)
+    if artifactory_path:
+        aql = artifactory_path
     else:
-        if not password:
-            raise ValueError("argument 'password' needs to be set for basic authentication")
-        auth = (username, password)
-    aql = ArtifactoryPath(artifactory_url, auth=auth, verify=verify)
+        if kerberos:
+            auth = HTTPKerberosAuth(mutual_authentication=DISABLED, sanitize_mutual_error_response=False)
+        else:
+            if not password:
+                raise ValueError("argument 'password' needs to be set for basic authentication")
+            auth = (username, password)
+        aql = ArtifactoryPath(artifactory_url, auth=auth, verify=verify)
 
     logging.debug("AQL query: items.find({})".format(aql_query_dict))
     artifacts = aql.aql('items.find', aql_query_dict)
@@ -156,8 +158,8 @@ def main():
 
     aql_query_dict, max_depth_print = prepare_aql(file=args.file, max_depth=args.max_depth, repository=args.repository,
                                                   without_downloads=args.without_downloads, older_than=args.older_than)
-    artifacts = artifactory_aql(artifactory_url=args.artifactory_url, aql_query_dict=aql_query_dict,
-                                username=args.username, password=args.password, kerberos=args.kerberos, verify=not args.ignorecert)
+    artifacts = artifactory_aql(artifactory_url=args.artifactory_url, username=args.username, password=args.password,
+                                aql_query_dict=aql_query_dict, kerberos=args.kerberos, verify=not args.ignorecert)
     print_str = out_as_du(artifacts, max_depth_print, args.human_readable, args.all)
     print(print_str)
 
