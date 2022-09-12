@@ -109,54 +109,8 @@ How to create a release:
 - Merge it and wait till all travis-ci jobs are passed and we have the new version in pypi https://pypi.org/project/artifactory-du/#history
 - Build and push docker image: `make docker-release`
 
-# AD
-Have a look at [artifactory-cleanup](https://github.com/devopshq/artifactory-cleanup). 
-
-It's  Artifactory's intelligence cleanup rules with config format like this:
-```python
-GOOD_FILTER_PATH_SYMBOLS = [
-    r'*release*', r'*/r-*',
-    r'*master*',
-    r'*stable*',
-]
-
-RULES = [
-    {'name': 'Clean all *.tmp',
-     'rules': [
-         rules.repo_by_mask('*.tmp'),
-         rules.delete_older_than_n_days(7),
-     ]},
-
-    {'name': 'Clean all *.BANNED after 7 days',
-     'rules': [
-         rules.repo_by_mask('*.BANNED'),
-         rules.delete_older_than_n_days(7),
-     ]},
-
-    {'name': 'Clean all *.snapshot after 30 days',
-     'rules': [
-         rules.repo_by_mask('*.snapshot'),
-         rules.delete_older_than_n_days(30),
-     ]},
-
-     {'name': 'tech-symbols',
-     'rules': [
-         rules.repo, # repo-name like 'name'
-         rules.delete_older_than_n_days(30),
-         rules.filter_without_path_mask(GOOD_FILTER_PATH_SYMBOLS),
-         rules.filter_without_filename_mask(GOOD_FILTER_PATH_SYMBOLS),
-         rules.filter_by_filename_mask('*-*symbols.tar.gz'),
-         rules.without_downloads()
-     ]},
-
-     {'name': 'docker-scmdev',
-     'rules': [
-         rules.repo, # repo-name like 'name'
-         rules.filter_by_path_mask('scmdev.test*'),
-         rules.delete_images_older_than_n_days(1),
-     ]},
-]
-```
+# Advertising
+- [artifactory-cleanup](https://github.com/devopshq/artifactory-cleanup) - is an extended and flexible cleanup tool for JFrog Artifactory.
 
 
 ---------------
