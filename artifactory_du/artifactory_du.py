@@ -25,6 +25,7 @@ def init_logging():
 
 def artifactory_aql(
     artifactory_url="",
+    access_token="",
     username="",
     password="",
     aql_query_dict=None,
@@ -36,6 +37,7 @@ def artifactory_aql(
     Send AQL to Artifactory and get list of Artifacts
     :param artifactory_path: (ArtifactoryPath) if provided then use this object as URL, username and password
     :param artifactory_url: URL path to artifactory (not the repo), not applied with artifactory_path
+    :param access_token: access token for authentication, not applied with artifactory_path
     :param username: username for authentication, not applied with artifactory_path
     :param password: password for authentication, not applied with artifactory_path
     :param kerberos: Boolean if kerberos authentication should be used
@@ -45,6 +47,8 @@ def artifactory_aql(
     """
     if artifactory_path:
         aql = artifactory_path
+    elif access_token:
+        aql = ArtifactoryPath(artifactory_url, token=access_token, verify=verify)
     else:
         if kerberos:
             auth = HTTPKerberosAuth(mutual_authentication=DISABLED, sanitize_mutual_error_response=False)
@@ -137,6 +141,11 @@ def parse_args():
         action="store_true",
         help="use kerberos authentication (no password needed here)",
     )
+    auth_args.add_argument(
+        "--access-token",
+        action="store",
+        help="access token how have READ access to repository (no password needed here)"
+    )
 
     parser.add_argument(
         "--password",
@@ -201,6 +210,7 @@ def main():
     )
     artifacts = artifactory_aql(
         artifactory_url=args.artifactory_url,
+        access_token=args.access_token,
         username=args.username,
         password=args.password,
         aql_query_dict=aql_query_dict,
