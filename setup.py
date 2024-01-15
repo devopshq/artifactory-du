@@ -37,7 +37,7 @@ def load_version():
     filename = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "artifactory_du", "version.py"))
     with open(filename, "rt") as version_file:
         artifactory_du_init = version_file.read()
-        version = re.search("__version__ = '([0-9a-z.-]+)'", artifactory_du_init).group(1)
+        version = re.search("__version__ = \"([0-9a-z.-]+)\"", artifactory_du_init).group(1)
         return version
 
 
